@@ -385,6 +385,24 @@ body::after {
   border-bottom: 2px solid var(--win-light); border-right: 2px solid var(--win-light);
 }
 .dialog-btn.primary { outline: 1px solid #000080; outline-offset: -2px; }
+
+/* ── INCOMING MAIL ── */
+#startup-mail {
+  position: fixed; top: 18px; right: 18px; z-index: 4500;
+  display: none; width: min(360px, calc(100vw - 36px));
+  background: var(--win-bg);
+  border-top: 2px solid var(--win-light); border-left: 2px solid var(--win-light);
+  border-bottom: 2px solid var(--win-dark); border-right: 2px solid var(--win-dark);
+  box-shadow: 4px 5px 12px rgba(0,0,0,.45);
+}
+#startup-mail.show { display: block; animation: mail-in .45s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes mail-in { from { opacity: 0; transform: translateY(-36px); } to { opacity: 1; transform: translateY(0); } }
+.mail-titlebar { background: linear-gradient(90deg,#000080,#1084d0); color:white; display:flex; align-items:center; gap:5px; padding:3px 5px; font:17px var(--font-ui); }
+.mail-titlebar span { flex:1; }
+.mail-close { width:18px; height:16px; color:#111; background:var(--btn-face); border-top:1px solid white; border-left:1px solid white; border-bottom:1px solid #555; border-right:1px solid #555; cursor:pointer; font:12px var(--font-ui); }
+.mail-body { padding:12px 14px 14px; font:12px/1.55 var(--font-body); color:#161616; }
+.mail-meta { color:#555; font-size:11px; margin-bottom:9px; }
+.mail-subject { font-family:var(--font-ui); color:#000080; font-size:19px; margin-bottom:8px; }
 </style>
 </head>
 <body>
@@ -410,6 +428,16 @@ body::after {
     </div>
   </div>
 </div>
+
+<!-- STARTUP SHELL NOTE -->
+<aside id="startup-mail" role="status" aria-live="polite" aria-label="New mail from Adam">
+  <div class="mail-titlebar"><span>📬 New Mail</span><button class="mail-close" aria-label="Dismiss mail" onclick="closeStartupMail()">✕</button></div>
+  <div class="mail-body">
+    <div class="mail-meta">From: Adam &lt;azeineld1@gmail.com&gt;<br>To: Startup Shell Review Team</div>
+    <div class="mail-subject">why I want in</div>
+    <p>hey Startup Shell — I mostly want to be around people who are building cool stuff. I’m always looking for new startup ideas, people to jam on them with, and an excuse to ship more. would be sick to meet everyone and see what we can make.</p>
+  </div>
+</aside>
 
 <!-- DESKTOP -->
 <div id="desktop" oncontextmenu="showCtxMenu(event)" onclick="desktopClick(event)">
@@ -775,14 +803,6 @@ body::after {
       Software engineering intern at Waters Corporation and Johns Hopkins APL
     </div>
 
-    <!-- Why Startup Shell -->
-    <div style="font-size:10px;letter-spacing:3px;color:#888;margin-bottom:10px;text-transform:uppercase;">
-      Why I'd love to join the team
-    </div>
-    <div style="font-size:12.5px;color:#222;line-height:1.85;margin-bottom:22px;text-align:center;">
-      The moment I first learned about Startup Shell, I felt an immediate pull — a community of builders who care deeply about what they're making and why. Being surrounded by driven, curious people who are actually shipping things changes how you think about what's possible. I want to build alongside people who inspire me, and Startup Shell is exactly that place.
-    </div>
-
     <!-- Divider -->
     <div style="border-top:1px solid #c0c0c0;margin:0 0 18px;"></div>
 
@@ -844,7 +864,11 @@ function updateClock() {
 updateClock(); setInterval(updateClock, 10000);
 
 // ── WELCOME ────────────────────────────────────
-function closeWelcome() { document.getElementById('welcome').classList.add('hidden'); }
+function closeWelcome() {
+  document.getElementById('welcome').classList.add('hidden');
+  window.setTimeout(() => document.getElementById('startup-mail').classList.add('show'), 250);
+}
+function closeStartupMail() { document.getElementById('startup-mail').classList.remove('show'); }
 
 // ── WINDOW MANAGEMENT ─────────────────────────
 let zTop = 10;
